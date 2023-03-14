@@ -22,15 +22,12 @@ namespace TowerRemaster
         private Texture _textureTwo;
 
         private double _time;
-        private Matrix4 _view;
 
         private Camera _camera;
 
         private bool _firstMove = true;
 
         private Vector2 _lastPos;
-
-        private Matrix4 _projection;
 
         private readonly float[] vertices = {
             //Position          Texture coordinates
@@ -77,14 +74,11 @@ namespace TowerRemaster
 
             GL.EnableVertexAttribArray(0);
 
-            _texture = Texture.LoadFromFile("Resources/container.png");
-            _textureTwo = Texture.LoadFromFile("Resources/awesomeface.png");
+            _texture = TextureLoader.LoadFromFile("Resources/container.png");
+            _textureTwo = TextureLoader.LoadFromFile("Resources/awesomeface.png");
             shader.Use();
             shader.SetInt("texture1", 0);
             shader.SetInt("texture2", 1);
-
-            _view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
-            _projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), Size.X / (float)Size.Y, 0.1f, 100.0f);
 
             _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
 
