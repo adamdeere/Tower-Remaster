@@ -6,6 +6,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using TowerRemaster.Components;
 using TowerRemaster.GameObjects;
 using TowerRemaster.Managers;
+using TowerRemaster.Systems.InputSystems;
 using TowerRemaster.Systems.RenderSystems;
 using TowerRemaster.Utility;
 
@@ -54,18 +55,25 @@ namespace TowerRemaster
             string two = "Resources/awesomeface.png";
 
             Entity newEntity;
+
             newEntity = new Entity("test");
             newEntity.AddComponent(new ComponentModel(_model));
             newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
             newEntity.AddComponent(new ComponentMaterial(new Material(one, two)));
-
             m_EntityManager.AddEntity(newEntity);
+
+            // newEntity = new Entity("MainCam");
+            // newEntity.AddComponent(new ComponentModel(_model));
+            // newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
+            // newEntity.AddComponent(new ComponentMaterial(new Material(one, two)));
+            // m_EntityManager.AddEntity(newEntity);
         }
 
         private void CreateSystems()
         {
             // add render system
             m_SystemManager.AddRenderSystem(new SystemRender());
+            m_SystemManager.AddInputSystem(new SystemInput());
         }
 
         protected override void OnLoad()
@@ -83,16 +91,12 @@ namespace TowerRemaster
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
+            var input = KeyboardState;
+            m_SystemManager.ActionInputSystems(m_EntityManager, input);
             m_SystemManager.ActionUpdateSystems(m_EntityManager, (float)e.Time);
             if (!IsFocused) // Check to see if the window is focused
             {
                 return;
-            }
-            var input = KeyboardState;
-
-            if (input.IsKeyDown(Keys.Escape))
-            {
-                Close();
             }
 
             const float cameraSpeed = 1.5f;
