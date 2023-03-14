@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System.Reflection;
+using TowerRemaster.GameObjects;
 using TowerRemaster.Utility;
 
 namespace TowerRemaster
@@ -20,11 +20,16 @@ namespace TowerRemaster
         private Texture _texture;
 
         private Texture _textureTwo;
-       
+
         private double _time;
         private Matrix4 _view;
 
-        
+        private Camera _camera;
+
+        private bool _firstMove = true;
+
+        private Vector2 _lastPos;
+
         private Matrix4 _projection;
 
         private readonly float[] vertices = {
@@ -77,20 +82,84 @@ namespace TowerRemaster
             shader.Use();
             shader.SetInt("texture1", 0);
             shader.SetInt("texture2", 1);
-            
+
             _view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
             _projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), Size.X / (float)Size.Y, 0.1f, 100.0f);
+
+            _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
+
+            // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
+            CursorState = CursorState.Grabbed;
         }
 
-        protected override void OnUpdateFrame(FrameEventArgs args)
+        protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            base.OnUpdateFrame(args);
-            KeyboardState input = KeyboardState;
+            base.OnUpdateFrame(e);
+            if (!IsFocused) // Check to see if the window is focused
+            {
+                return;
+            }
+            var input = KeyboardState;
 
             if (input.IsKeyDown(Keys.Escape))
             {
                 Close();
             }
+
+            const float cameraSpeed = 1.5f;
+            const float sensitivity = 0.2f;
+
+            if (input.IsKeyDown(Keys.W))
+            {
+                _camera.Position += _camera.Front * cameraSpeed * (float)e.Time; // Forward
+            }
+
+            if (input.IsKeyDown(Keys.S))
+            {
+                _camera.Position -= _camera.Front * cameraSpeed * (float)e.Time; // Backwards
+            }
+            if (input.IsKeyDown(Keys.A))
+            {
+                _camera.Position -= _camera.Right * cameraSpeed * (float)e.Time; // Left
+            }
+            if (input.IsKeyDown(Keys.D))
+            {
+                _camera.Position += _camera.Right * cameraSpeed * (float)e.Time; // Right
+            }
+            if (input.IsKeyDown(Keys.Space))
+            {
+                _camera.Position += _camera.Up * cameraSpeed * (float)e.Time; // Up
+            }
+            if (input.IsKeyDown(Keys.LeftShift))
+            {
+                _camera.Position -= _camera.Up * cameraSpeed * (float)e.Time; // Down
+            }
+            // Get the mouse state
+            var mouse = MouseState;
+
+            if (_firstMove) // This bool variable is initially set to true.
+            {
+                _lastPos = new Vector2(mouse.X, mouse.Y);
+                _firstMove = false;
+            }
+            else
+            {
+                // Calculate the offset of the mouse position
+                var deltaX = mouse.X - _lastPos.X;
+                var deltaY = mouse.Y - _lastPos.Y;
+                _lastPos = new Vector2(mouse.X, mouse.Y);
+
+                // Apply the camera pitch and yaw (we clamp the pitch in the camera class)
+                _camera.Yaw += deltaX * sensitivity;
+                _camera.Pitch -= deltaY * sensitivity; // Reversed since y-coordinates range from bottom to top
+            }
+        }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            _camera.Fov -= e.OffsetY;
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -109,7 +178,7 @@ namespace TowerRemaster
             model *= Matrix4.CreateScale(1.1f);
             model *= Matrix4.CreateTranslation(0.1f, 0.1f, 0.0f);
 
-            Matrix4 mvp = model * _view * _projection;
+            Matrix4 mvp = model * _camera.GetViewMatrix() * _camera.GetProjectionMatrix();
             shader.SetMatrix4("mvp", mvp);
 
             GL.BindVertexArray(VertexArrayObject);
