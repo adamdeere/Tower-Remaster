@@ -6,6 +6,7 @@ namespace TowerRemaster.Utility
     internal static class TextureLoader
     {
         private static List<Texture> m_LoadedTextures = new List<Texture>();
+
         public static Texture LoadFromFile(string path)
         {
             // Generate handle
