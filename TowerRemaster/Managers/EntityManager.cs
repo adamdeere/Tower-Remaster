@@ -33,10 +33,11 @@ namespace TowerRemaster.Managers
 
         public Entity FindEntity(string name)
         {
-            return m_EntityList.Find(delegate (Entity e)
+            Entity? entity = m_EntityList.Find(delegate (Entity e)
             {
                 return e.Name == name;
             });
+            return entity;
         }
     }
 }

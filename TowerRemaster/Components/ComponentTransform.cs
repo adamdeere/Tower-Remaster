@@ -6,10 +6,16 @@ namespace TowerRemaster.Components
     internal class ComponentTransform : IComponent
     {
         private Vector3 m_Position;
+        private Vector3 m_Rotaion;
+        private Vector3 m_Scale;
 
-        public ComponentTransform(float x, float y, float z)
+        public ComponentTypes ComponentType => ComponentTypes.COMPONENT_TRANSFORM;
+
+        public ComponentTransform(Vector3 pos, Vector3 rot, Vector3 scale)
         {
-            m_Position = new Vector3(x, y, z);
+            m_Position = pos;
+            m_Rotaion = rot;
+            m_Scale = scale;
         }
 
         public Vector3 Position
@@ -18,6 +24,16 @@ namespace TowerRemaster.Components
             set { m_Position = value; }
         }
 
-        public ComponentTypes ComponentType => ComponentTypes.COMPONENT_TRANSFORM;
+        public Vector3 Rotation
+        {
+            get { return m_Rotaion; }
+            set { m_Rotaion = value; }
+        }
+
+        public Vector3 Scale
+        {
+            get { return m_Scale; }
+            set { m_Scale = value; }
+        }
     }
 }

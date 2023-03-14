@@ -16,7 +16,7 @@ namespace TowerRemaster.GameObjects
 
         public IComponent FindComponent(ComponentTypes type)
         {
-            IComponent transformComponent = m_ComponentList.Find(delegate (IComponent component)
+            IComponent? transformComponent = m_ComponentList.Find(delegate (IComponent component)
             {
                 return component.ComponentType == type;
             });

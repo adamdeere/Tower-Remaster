@@ -3,7 +3,10 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using TowerRemaster.Components;
 using TowerRemaster.GameObjects;
+using TowerRemaster.Managers;
+using TowerRemaster.Systems.RenderSystems;
 using TowerRemaster.Utility;
 
 namespace TowerRemaster
@@ -11,16 +14,7 @@ namespace TowerRemaster
     internal class Game : GameWindow
     {
         private Model _model;
-        private Shader shader;
-
-        // For documentation on this, check Texture.cs.
-        private Texture _texture;
-
-        private Texture _textureTwo;
-
-        private double _time;
-
-        private CameraObject _camera;
+        private readonly CameraObject _camera;
 
         private bool _firstMove = true;
 
@@ -39,35 +33,57 @@ namespace TowerRemaster
             1, 2, 3    // second triangle
         };
 
+        private readonly EntityManager m_EntityManager;
+        private readonly SystemManager m_SystemManager;
+
         public Game(int width, int height, string title)
             : base(GameWindowSettings.Default, new NativeWindowSettings()
             { Size = (width, height), Title = title })
         {
+            _camera = new CameraObject(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
+            m_EntityManager = new EntityManager(_camera);
+            m_SystemManager = new SystemManager();
+        }
+
+        private void CreateEntites()
+        {
+            Vector3 rot = new Vector3(20f);
+            Vector3 scale = new Vector3(1.1f);
+            Vector3 pos = new Vector3(0.1f, 0.1f, 0.0f);
+            string one = "Resources/container.png";
+            string two = "Resources/awesomeface.png";
+
+            Entity newEntity;
+            newEntity = new Entity("test");
+            newEntity.AddComponent(new ComponentModel(_model));
+            newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
+            newEntity.AddComponent(new ComponentMaterial(new Material(one, two)));
+
+            m_EntityManager.AddEntity(newEntity);
+        }
+
+        private void CreateSystems()
+        {
+            // add render system
+            m_SystemManager.AddRenderSystem(new SystemRender());
         }
 
         protected override void OnLoad()
         {
             base.OnLoad();
-            shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
             _model = ModelLoader.LoadModel(vertices, indices);
-
-            _texture = TextureLoader.LoadFromFile("Resources/container.png");
-            _textureTwo = TextureLoader.LoadFromFile("Resources/awesomeface.png");
-            shader.Use();
-            shader.SetInt("texture1", 0);
-            shader.SetInt("texture2", 1);
-
-            _camera = new CameraObject(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
-
+            CreateEntites();
+            CreateSystems();
             // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
-            CursorState = CursorState.Grabbed;
+            // CursorState = CursorState.Grabbed;
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
+            m_SystemManager.ActionUpdateSystems(m_EntityManager, (float)e.Time);
             if (!IsFocused) // Check to see if the window is focused
             {
                 return;
@@ -140,22 +156,7 @@ namespace TowerRemaster
             base.OnRenderFrame(e);
 
             GL.Clear(ClearBufferMask.ColorBufferBit);
-
-            _texture.Use(TextureUnit.Texture0);
-            _textureTwo.Use(TextureUnit.Texture1);
-
-            shader.Use();
-
-            var model = Matrix4.Identity;
-            model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(20f));
-            model *= Matrix4.CreateScale(1.1f);
-            model *= Matrix4.CreateTranslation(0.1f, 0.1f, 0.0f);
-
-            Matrix4 mvp = model * _camera.GetViewMatrix() * _camera.GetProjectionMatrix();
-            shader.SetMatrix4("mvp", mvp);
-
-            _model.DrawModel();
-
+            m_SystemManager.ActionRenderSystems(m_EntityManager);
             SwapBuffers();
         }
 
