@@ -1,12 +1,12 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using StbImageSharp;
 
 namespace TowerRemaster.Utility
 {
     internal class Texture
     {
         private readonly int Handle;
-        private readonly string Path;  
+        private readonly string Path;
+
         public Texture(int glHandle, string path)
         {
             Handle = glHandle;

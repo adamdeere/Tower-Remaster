@@ -10,8 +10,9 @@ namespace TowerRemaster.Utility
         public Model(int vao, int count)
         {
             _vao = vao;
-            _count= count;
+            _count = count;
         }
+
         public void DrawModel()
         {
             GL.BindVertexArray(_vao);
@@ -21,6 +22,11 @@ namespace TowerRemaster.Utility
         public void DisposeModel()
         {
             GL.DeleteVertexArray(_vao);
+        }
+
+        public int VaoHandle
+        {
+            get { return _vao; }
         }
     }
 }

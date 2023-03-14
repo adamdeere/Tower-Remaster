@@ -20,7 +20,7 @@ namespace TowerRemaster
 
         private double _time;
 
-        private Camera _camera;
+        private CameraObject _camera;
 
         private bool _firstMove = true;
 
@@ -59,7 +59,7 @@ namespace TowerRemaster
             shader.SetInt("texture1", 0);
             shader.SetInt("texture2", 1);
 
-            _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
+            _camera = new CameraObject(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
 
             // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
             CursorState = CursorState.Grabbed;
