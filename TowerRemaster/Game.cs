@@ -1,21 +1,32 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using System.Reflection;
 using TowerRemaster.Utility;
 
 namespace TowerRemaster
 {
     internal class Game : GameWindow
     {
-        int VertexBufferObject; 
-        int VertexArrayObject;
-        int ElementBufferObject;
+        private int VertexBufferObject;
+        private int VertexArrayObject;
+        private int ElementBufferObject;
 
         private Shader shader;
+
         // For documentation on this, check Texture.cs.
         private Texture _texture;
+
         private Texture _textureTwo;
+       
+        private double _time;
+        private Matrix4 _view;
+
+        
+        private Matrix4 _projection;
+
         private readonly float[] vertices = {
             //Position          Texture coordinates
              0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
@@ -23,10 +34,12 @@ namespace TowerRemaster
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
             -0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left
         };
-       private readonly uint[] indices = {  // note that we start from 0!
+
+        private readonly uint[] indices = {  // note that we start from 0!
             0, 1, 3,   // first triangle
             1, 2, 3    // second triangle
         };
+
         public Game(int width, int height, string title)
             : base(GameWindowSettings.Default, new NativeWindowSettings()
             { Size = (width, height), Title = title })
@@ -57,7 +70,6 @@ namespace TowerRemaster
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
-
             GL.EnableVertexAttribArray(0);
 
             _texture = Texture.LoadFromFile("Resources/container.png");
@@ -65,6 +77,9 @@ namespace TowerRemaster
             shader.Use();
             shader.SetInt("texture1", 0);
             shader.SetInt("texture2", 1);
+            
+            _view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
+            _projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), Size.X / (float)Size.Y, 0.1f, 100.0f);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs args)
@@ -84,11 +99,18 @@ namespace TowerRemaster
 
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            
             _texture.Use(TextureUnit.Texture0);
             _textureTwo.Use(TextureUnit.Texture1);
 
             shader.Use();
+
+            var model = Matrix4.Identity;
+            model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(20f));
+            model *= Matrix4.CreateScale(1.1f);
+            model *= Matrix4.CreateTranslation(0.1f, 0.1f, 0.0f);
+
+            Matrix4 mvp = model * _view * _projection;
+            shader.SetMatrix4("mvp", mvp);
 
             GL.BindVertexArray(VertexArrayObject);
             GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
@@ -102,6 +124,7 @@ namespace TowerRemaster
 
             GL.Viewport(0, 0, e.Width, e.Height);
         }
+
         protected override void OnUnload()
         {
             base.OnUnload();

@@ -44,6 +44,7 @@ namespace TowerRemaster.Utility
         {
             Handle = glHandle;
         }
+
         public void Use(TextureUnit unit)
         {
             GL.ActiveTexture(unit);
