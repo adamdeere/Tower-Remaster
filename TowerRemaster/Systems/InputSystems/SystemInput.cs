@@ -10,12 +10,6 @@ namespace TowerRemaster.Systems.InputSystems
 
         public void OnAction(EntityManager entityManager, KeyboardState state)
         {
-            if (state.IsKeyDown(Keys.Escape))
-            {
-                int i = 0;
-                i++;
-                // Close();
-            }
         }
     }
 }
