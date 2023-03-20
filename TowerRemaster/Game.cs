@@ -38,8 +38,9 @@ namespace TowerRemaster
             Vector3 rot = new Vector3(0);
             Vector3 scale = new Vector3(1);
             Vector3 pos = new Vector3(0, 0, 0);
-            string one = "Resources/container.png";
-            string two = "Resources/awesomeface.png";
+
+            string two = "Resources/container.png";
+            string one = "Assets/Textures/Sphere/Doom/Doom_Sphere_Base_color.png";
 
             Entity newEntity;
 

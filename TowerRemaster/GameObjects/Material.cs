@@ -8,18 +8,18 @@ namespace TowerRemaster.GameObjects
         // For documentation on this, check Texture.cs.
         private readonly Texture _texture;
 
-        private readonly Texture _textureTwo;
+        // private readonly Texture _textureTwo;
 
         public Material(string one, string two)
         {
             _texture = TextureLoader.LoadFromFile(one);
-            _textureTwo = TextureLoader.LoadFromFile(two);
+            // _textureTwo = TextureLoader.LoadFromFile(two);
         }
 
         public void SetMaterial()
         {
             _texture.Use(TextureUnit.Texture0);
-            _textureTwo.Use(TextureUnit.Texture1);
+            //_textureTwo.Use(TextureUnit.Texture1);
         }
     }
 }
