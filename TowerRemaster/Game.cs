@@ -39,15 +39,14 @@ namespace TowerRemaster
             Vector3 scale = new Vector3(1);
             Vector3 pos = new Vector3(0, 0, 0);
 
-            string two = "Resources/container.png";
-            string one = "Assets/Textures/Sphere/Doom/Doom_Sphere_Base_color.png";
+            string one = "Assets/Textures/Sphere/Doom/";
 
             Entity newEntity;
 
             newEntity = new Entity("Doom");
             newEntity.AddComponent(new ComponentModel(_model));
             newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
-            newEntity.AddComponent(new ComponentMaterial(new Material(one, two)));
+            newEntity.AddComponent(new ComponentMaterial(new Material(one)));
             m_EntityManager.AddEntity(newEntity);
 
             // newEntity = new Entity("MainCam");

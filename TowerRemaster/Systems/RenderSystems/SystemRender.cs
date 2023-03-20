@@ -21,7 +21,7 @@ namespace TowerRemaster.Systems.RenderSystems
 
         public SystemRender()
         {
-            shader = new Shader("Shaders/PBR_Shader.vert", "Shaders/PBR_Shader.frag");
+            shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
         }
 
         public void OnAction(EntityManager entityManager)
@@ -30,9 +30,9 @@ namespace TowerRemaster.Systems.RenderSystems
             shader.Use();
             shader.SetInt("texture1", 0);
            // shader.SetVector3("objectColor", new Vector3(1.0f, 0.5f, 0.31f));
-            shader.SetVector3("lightColor", new Vector3(1.0f, 1.0f, 1.0f));
-            shader.SetVector3("lightPos", _lightPos);
-            shader.SetVector3("viewPos", camera.Position);
+           // shader.SetVector3("lightColor", new Vector3(1.0f, 1.0f, 1.0f));
+           // shader.SetVector3("lightPos", _lightPos);
+           // shader.SetVector3("viewPos", camera.Position);
             foreach (var entity in entityManager.Entities())
             {
                 if ((entity.Mask & MASK) == MASK)
