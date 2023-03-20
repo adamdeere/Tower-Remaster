@@ -4,37 +4,12 @@ namespace TowerRemaster.Utility
 {
     internal static class ModelLoader
     {
-        public static Model LoadModel(float[] vertices, uint[] indices)
-        {
-            int VertexArrayObject = GL.GenVertexArray();
-            int VertexBufferObject = GL.GenBuffer();
-
-            GL.BindVertexArray(VertexArrayObject);
-            // 2. copy our vertices array in a buffer for OpenGL to use
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-            GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-
-            GL.EnableVertexAttribArray(1);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-
-            int ElementBufferObject = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
-
-            GL.EnableVertexAttribArray(0);
-
-            return new Model(VertexArrayObject, indices.Length);
-        }
-
         public static Model LoadFromFile(string fileName)
         {
             List<float> vertices = new List<float>();
-            List<int> inds = new List<int>();
+            List<int> indices = new List<int>();
             string[] separatingStrings = { " ", "," };
-            using (StreamReader sr = File.OpenText("Assets/Models/"+ fileName))
+            using (StreamReader sr = File.OpenText("Assets/Models/" + fileName))
             {
                 string s = string.Empty;
                 while (sr.Peek() != -1)
@@ -43,22 +18,22 @@ namespace TowerRemaster.Utility
 
                     if (line != null)
                     {
-                        string[] words = line.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
-                        if (words[0] == "verts")
+                        string[] vertString = line.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
+                        if (vertString[0] == "verts")
                         {
-                            for (int i = 1; i < words.Length; i++)
+                            for (int i = 1; i < vertString.Length; i++)
                             {
-                                if (float.TryParse(words[i], out float numValue))
+                                if (float.TryParse(vertString[i], out float numValue))
                                 {
                                     vertices.Add(numValue);
                                 }
                             }
                         }
-                        else if (words[0] == "inds")
+                        else if (vertString[0] == "inds")
                         {
-                            if (int.TryParse(words[1], out int numValue))
+                            if (int.TryParse(vertString[1], out int numValue))
                             {
-                                inds.Add(numValue);
+                                indices.Add(numValue);
                             }
                         }
                     }
@@ -80,10 +55,10 @@ namespace TowerRemaster.Utility
 
             int ElementBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, inds.Count * sizeof(int), inds.ToArray(), BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Count * sizeof(int), indices.ToArray(), BufferUsageHint.StaticDraw);
 
             GL.GetBufferParameter(BufferTarget.ElementArrayBuffer, BufferParameterName.BufferSize, out size);
-            if (inds.Count * sizeof(int) != size)
+            if (indices.Count * sizeof(int) != size)
             {
                 throw new ApplicationException("Index data not loaded onto graphics card correctly");
             }
@@ -103,7 +78,7 @@ namespace TowerRemaster.Utility
             GL.EnableVertexAttribArray(4);
             GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, bufferSize, 11 * sizeof(float));
 
-            return new Model(VertexArrayObject, inds.Count);
+            return new Model(VertexArrayObject, indices.Count);
         }
     }
 }
