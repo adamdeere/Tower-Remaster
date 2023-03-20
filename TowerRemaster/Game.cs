@@ -21,19 +21,6 @@ namespace TowerRemaster
 
         private Vector2 _lastPos;
 
-        private readonly float[] vertices = {
-            //Position          Texture coordinates
-             0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
-             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-            -0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left
-        };
-
-        private readonly uint[] indices = {  // note that we start from 0!
-            0, 1, 3,   // first triangle
-            1, 2, 3    // second triangle
-        };
-
         private readonly EntityManager m_EntityManager;
         private readonly SystemManager m_SystemManager;
 
@@ -48,15 +35,15 @@ namespace TowerRemaster
 
         private void CreateEntites()
         {
-            Vector3 rot = new Vector3(20f);
-            Vector3 scale = new Vector3(1.1f);
-            Vector3 pos = new Vector3(0.1f, 0.1f, 0.0f);
+            Vector3 rot = new Vector3(0);
+            Vector3 scale = new Vector3(1);
+            Vector3 pos = new Vector3(0, 0, 0);
             string one = "Resources/container.png";
             string two = "Resources/awesomeface.png";
 
             Entity newEntity;
 
-            newEntity = new Entity("test");
+            newEntity = new Entity("Doom");
             newEntity.AddComponent(new ComponentModel(_model));
             newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
             newEntity.AddComponent(new ComponentMaterial(new Material(one, two)));
@@ -81,7 +68,7 @@ namespace TowerRemaster
             base.OnLoad();
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-            _model = ModelLoader.LoadModel(vertices, indices);
+            _model = ModelLoader.LoadFromFile("Sphere.txt");
             CreateEntites();
             CreateSystems();
             // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
@@ -92,12 +79,13 @@ namespace TowerRemaster
         {
             base.OnUpdateFrame(e);
             var input = KeyboardState;
-            m_SystemManager.ActionInputSystems(m_EntityManager, input);
+            // m_SystemManager.ActionInputSystems(m_EntityManager, input);
             m_SystemManager.ActionUpdateSystems(m_EntityManager, (float)e.Time);
             if (!IsFocused) // Check to see if the window is focused
-            {
                 return;
-            }
+
+            if (input.IsKeyDown(Keys.Escape))
+                Close();
 
             const float cameraSpeed = 1.5f;
             const float sensitivity = 0.2f;
@@ -159,7 +147,8 @@ namespace TowerRemaster
         {
             base.OnRenderFrame(e);
 
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             m_SystemManager.ActionRenderSystems(m_EntityManager);
             SwapBuffers();
         }
