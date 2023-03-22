@@ -29,10 +29,10 @@ namespace TowerRemaster.Systems.RenderSystems
             CameraObject camera = entityManager.CurrentCam;
             shader.Use();
             shader.SetInt("texture1", 0);
-           // shader.SetVector3("objectColor", new Vector3(1.0f, 0.5f, 0.31f));
-           // shader.SetVector3("lightColor", new Vector3(1.0f, 1.0f, 1.0f));
-           // shader.SetVector3("lightPos", _lightPos);
-           // shader.SetVector3("viewPos", camera.Position);
+            // shader.SetVector3("objectColor", new Vector3(1.0f, 0.5f, 0.31f));
+            // shader.SetVector3("lightColor", new Vector3(1.0f, 1.0f, 1.0f));
+            // shader.SetVector3("lightPos", _lightPos);
+            // shader.SetVector3("viewPos", camera.Position);
             foreach (var entity in entityManager.Entities())
             {
                 if ((entity.Mask & MASK) == MASK)
@@ -46,14 +46,20 @@ namespace TowerRemaster.Systems.RenderSystems
                     Vector3? scale = transformComp?.Scale;
 
                     var model = Matrix4.Identity;
-                    model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Value.Z));
-                    model *= Matrix4.CreateScale(scale.Value.X, scale.Value.Y, scale.Value.Z);
-                    model *= Matrix4.CreateTranslation(position.Value.X, position.Value.Y, position.Value.Z);
+                    if (position != null && rotation != null && scale != null)
+                    {
+                        model *= Matrix4.CreateScale(scale.Value.X, scale.Value.Y, scale.Value.Z);
+                        model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.Value.X));
+                        model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Value.Y));
+                        model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Value.Z));
+
+                        model *= Matrix4.CreateTranslation(position.Value.X, position.Value.Y, position.Value.Z);
+                    }
 
                     Matrix4 mvp = model * camera.GetViewMatrix() * camera.GetProjectionMatrix();
                     shader.SetMatrix4("mvp", mvp);
 
-                    matComp?.MatHandle.SetMaterial();
+                    matComp?.MatHandle.SetMaterial(shader);
                     modelComp?.ModelHandle.DrawModel();
                 }
             }

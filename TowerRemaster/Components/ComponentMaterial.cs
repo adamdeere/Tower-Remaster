@@ -1,5 +1,5 @@
 ﻿using TowerRemaster.Components.Interfaces;
-using TowerRemaster.GameObjects;
+using TowerRemaster.GameObjects.Materials;
 
 namespace TowerRemaster.Components
 {
@@ -7,14 +7,14 @@ namespace TowerRemaster.Components
     {
         public ComponentTypes ComponentType => ComponentTypes.COMPONENT_MATERIAL;
 
-        private Material m_Mat;
+        private SpecularMaterial m_Mat;
 
-        public ComponentMaterial(Material mat)
+        public ComponentMaterial(SpecularMaterial mat)
         {
             m_Mat = mat;
         }
 
-        public Material MatHandle
+        public SpecularMaterial MatHandle
         {
             get { return m_Mat; }
             set { m_Mat = value; }

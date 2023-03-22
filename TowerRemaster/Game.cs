@@ -5,6 +5,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using TowerRemaster.Components;
 using TowerRemaster.GameObjects;
+using TowerRemaster.GameObjects.Materials;
 using TowerRemaster.Managers;
 using TowerRemaster.Systems.InputSystems;
 using TowerRemaster.Systems.RenderSystems;
@@ -46,7 +47,7 @@ namespace TowerRemaster
             newEntity = new Entity("Doom");
             newEntity.AddComponent(new ComponentModel(_model));
             newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
-            newEntity.AddComponent(new ComponentMaterial(new Material(one)));
+            newEntity.AddComponent(new ComponentMaterial(new SpecularMaterial(one)));
             m_EntityManager.AddEntity(newEntity);
 
             // newEntity = new Entity("MainCam");
