@@ -1,5 +1,5 @@
 ﻿using TowerRemaster.Components.Interfaces;
-using TowerRemaster.Utility;
+using TowerRemaster.GameObjects.Models;
 
 namespace TowerRemaster.Components
 {

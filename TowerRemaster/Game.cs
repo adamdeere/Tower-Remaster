@@ -5,6 +5,9 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using TowerRemaster.Components;
 using TowerRemaster.GameObjects;
+using TowerRemaster.GameObjects.Lights;
+using TowerRemaster.GameObjects.Materials;
+using TowerRemaster.GameObjects.Models;
 using TowerRemaster.Managers;
 using TowerRemaster.Systems.InputSystems;
 using TowerRemaster.Systems.RenderSystems;
@@ -14,7 +17,6 @@ namespace TowerRemaster
 {
     internal class Game : GameWindow
     {
-        private Model _model;
         private readonly CameraObject _camera;
 
         private bool _firstMove = true;
@@ -24,6 +26,14 @@ namespace TowerRemaster
         private readonly EntityManager m_EntityManager;
         private readonly SystemManager m_SystemManager;
 
+        private readonly Vector3[] _pointLightPositions =
+        {
+            new Vector3(0.7f, 0.2f, 2.0f),
+            new Vector3(2.3f, -3.3f, -4.0f),
+            new Vector3(-4.0f, 2.0f, -1),
+            new Vector3(0.0f, 0.0f, -3.0f)
+        };
+
         public Game(int width, int height, string title)
             : base(GameWindowSettings.Default, new NativeWindowSettings()
             { Size = (width, height), Title = title })
@@ -32,21 +42,26 @@ namespace TowerRemaster
             m_EntityManager = new EntityManager(_camera);
             m_SystemManager = new SystemManager();
         }
-
+        private void CreateLights()
+        {
+            m_EntityManager.AddLight(new DirectionalLight());
+            m_EntityManager.AddLight(new SpotLight());
+            m_EntityManager.AddLight(new PointLight(_pointLightPositions));
+        }
         private void CreateEntites()
         {
             Vector3 rot = new Vector3(0);
             Vector3 scale = new Vector3(1);
-            Vector3 pos = new Vector3(0, 0, 0);
-            string one = "Resources/container.png";
-            string two = "Resources/awesomeface.png";
+            Vector3 pos = new Vector3(0);
+
+            string one = "Assets/Textures/Backpack/";
 
             Entity newEntity;
 
-            newEntity = new Entity("Doom");
-            newEntity.AddComponent(new ComponentModel(_model));
+            newEntity = new Entity("Backpack");
+            newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/backpackFBX.fbx")));
             newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
-            newEntity.AddComponent(new ComponentMaterial(new Material(one, two)));
+            newEntity.AddComponent(new ComponentMaterial(new SpecularMaterial(one)));
             m_EntityManager.AddEntity(newEntity);
 
             // newEntity = new Entity("MainCam");
@@ -59,7 +74,7 @@ namespace TowerRemaster
         private void CreateSystems()
         {
             // add render system
-            m_SystemManager.AddRenderSystem(new SystemRender());
+            m_SystemManager.AddRenderSystem(new SystemRenderMaterial());
             m_SystemManager.AddInputSystem(new SystemInput());
         }
 
@@ -68,9 +83,9 @@ namespace TowerRemaster
             base.OnLoad();
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-            _model = ModelLoader.LoadFromFile("Sphere.txt");
-            CreateEntites();
             CreateSystems();
+            CreateEntites();
+            CreateLights();
             // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
             // CursorState = CursorState.Grabbed;
         }
@@ -163,8 +178,7 @@ namespace TowerRemaster
         protected override void OnUnload()
         {
             base.OnUnload();
-
-            _model.DisposeModel();
+            ModelLoader.DisposeModels();
         }
     }
 }

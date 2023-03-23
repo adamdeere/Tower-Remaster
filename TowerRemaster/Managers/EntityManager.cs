@@ -1,14 +1,18 @@
 ﻿using TowerRemaster.GameObjects;
+using TowerRemaster.GameObjects.Lights;
+using TowerRemaster.Utility;
 
 namespace TowerRemaster.Managers
 {
     internal class EntityManager
     {
         private readonly List<Entity> m_EntityList;
+        private readonly List<ILightObject> m_LightsList;
         private CameraObject m_CameraObject;
 
         public EntityManager(CameraObject cameraObject)
         {
+            m_LightsList = new List<ILightObject>();
             m_EntityList = new List<Entity>();
             m_CameraObject = cameraObject;
         }
@@ -38,6 +42,24 @@ namespace TowerRemaster.Managers
                 return e.Name == name;
             });
             return entity;
+        }
+
+        public void AddLight(ILightObject light)
+        {
+            m_LightsList.Add(light);
+        }
+
+        public List<ILightObject> Lights()
+        {
+            return m_LightsList;
+        }
+
+        public void OnLightsAction(Shader shader)
+        {
+            foreach (var light in m_LightsList)
+            {
+                light.SetLights(shader, m_CameraObject);
+            }
         }
     }
 }

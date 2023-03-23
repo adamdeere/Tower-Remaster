@@ -1,68 +1,88 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using Assimp;
+using OpenTK.Graphics.OpenGL4;
+using TowerRemaster.GameObjects.Models;
 
 namespace TowerRemaster.Utility
 {
     internal static class ModelLoader
     {
-        public static Model LoadFromFile(string fileName)
-        {
-            List<float> vertices = new List<float>();
-            List<int> indices = new List<int>();
-            string[] separatingStrings = { " ", "," };
-            using (StreamReader sr = File.OpenText("Assets/Models/" + fileName))
-            {
-                string s = string.Empty;
-                while (sr.Peek() != -1)
-                {
-                    string? line = sr.ReadLine();
+        private static readonly Dictionary<string, Model> m_ModelDictionary = new Dictionary<string, Model>();
 
-                    if (line != null)
-                    {
-                        string[] vertString = line.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
-                        if (vertString[0] == "verts")
-                        {
-                            for (int i = 1; i < vertString.Length; i++)
-                            {
-                                if (float.TryParse(vertString[i], out float numValue))
-                                {
-                                    vertices.Add(numValue);
-                                }
-                            }
-                        }
-                        else if (vertString[0] == "inds")
-                        {
-                            if (int.TryParse(vertString[1], out int numValue))
-                            {
-                                indices.Add(numValue);
-                            }
-                        }
-                    }
+        public static void DisposeModels()
+        {
+            foreach (var item in m_ModelDictionary)
+            {
+                item.Value.DisposeModel();
+            }
+        }
+
+        public static MeshObject[] ProcessGeometryArray(string fileName)
+        {
+            Scene scene;
+            AssimpContext importer = new AssimpContext();
+            importer.SetConfig(new Assimp.Configs.NormalSmoothingAngleConfig(66.0f));
+            scene = importer.ImportFile(fileName,
+                       PostProcessPreset.TargetRealTimeMaximumQuality);
+            MeshObject[] m_Geometry = new MeshObject[scene.MeshCount];
+
+            for (int i = 0; i < scene.Meshes.Count; i++)
+            {
+                List<Vector3D[]> vertList = new List<Vector3D[]>
+                {
+                        scene.Meshes[i].Vertices.ToArray(),
+                        scene.Meshes[i].TextureCoordinateChannels[0].ToArray(),
+                        scene.Meshes[i].Normals.ToArray(),
+                        scene.Meshes[i].BiTangents.ToArray(),
+                        scene.Meshes[i].Tangents.ToArray()
+                };
+                m_Geometry[i] = ProcessGeometry(vertList, scene.Meshes[i].GetIndices(), scene.Meshes[i].VertexCount);
+            }
+            return m_Geometry;
+        }
+
+        private static MeshObject ProcessGeometry(List<Vector3D[]> vertList, int[] indices, int vertexCount)
+        {
+            List<float> vertices = new();
+            for (int i = 0; i < vertexCount; i++)
+            {
+                //loops over a list of arrays to keep the data in order
+                for (int j = 0; j < vertList.Count; j++)
+                {
+                    Vector3D[] vert = vertList[j];
+                    Vector3D k = vert[i];
+                    vertices.Add(k.X);
+                    vertices.Add(k.Y);
+                    //ignores the 3rd element for the tex coord as there is only two and would be a large waste of memory on larger models
+                    if (j != 1)
+                        vertices.Add(k.Z);
                 }
             }
-
+            float[] verts = vertices.ToArray();
             int VertexBufferObject = GL.GenBuffer();
             int VertexArrayObject = GL.GenVertexArray();
 
             GL.BindVertexArray(VertexArrayObject);
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Count * sizeof(float), vertices.ToArray(), BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, verts.Length * sizeof(float), verts, BufferUsageHint.StaticDraw);
 
             GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out int size);
-            if (vertices.Count * sizeof(float) != size)
+            if (verts.Length * sizeof(float) != size)
             {
                 throw new ApplicationException("Vertex data not loaded onto graphics card correctly");
             }
 
             int ElementBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Count * sizeof(int), indices.ToArray(), BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
             GL.GetBufferParameter(BufferTarget.ElementArrayBuffer, BufferParameterName.BufferSize, out size);
-            if (indices.Count * sizeof(int) != size)
+            if (indices.Length * sizeof(int) != size)
             {
                 throw new ApplicationException("Index data not loaded onto graphics card correctly");
             }
+
             int bufferSize = 14 * sizeof(float);
+
             GL.EnableVertexAttribArray(0);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, bufferSize, 0);
 
@@ -78,7 +98,7 @@ namespace TowerRemaster.Utility
             GL.EnableVertexAttribArray(4);
             GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, bufferSize, 11 * sizeof(float));
 
-            return new Model(VertexArrayObject, indices.Count);
+            return new MeshObject(VertexArrayObject, indices.Length);
         }
     }
 }
