@@ -165,25 +165,21 @@ namespace TowerRemaster.Utility
             Shader _shader = ShaderManager.shaderDictionary[shaderType];
 
             int bufferSize = 14 * sizeof(float);
-            var vertexLocation = _shader.GetAttribLocation("a_Position");
-            GL.EnableVertexAttribArray(vertexLocation);
-            GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, bufferSize, 0);
+            
+            GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, bufferSize, 0);
 
-            var texLocation = _shader.GetAttribLocation("a_TexCoord");
-            GL.EnableVertexAttribArray(texLocation);
-            GL.VertexAttribPointer(texLocation, 2, VertexAttribPointerType.Float, false, bufferSize, 3 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, bufferSize, 3 * sizeof(float));
+            
+            GL.EnableVertexAttribArray(2);
+            GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, bufferSize, 5 * sizeof(float));
 
-            var normalLocation = _shader.GetAttribLocation("a_Normal");
-            GL.EnableVertexAttribArray(normalLocation);
-            GL.VertexAttribPointer(normalLocation, 3, VertexAttribPointerType.Float, false, bufferSize, 5 * sizeof(float));
+            GL.EnableVertexAttribArray(3);
+            GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, bufferSize, 8 * sizeof(float));
 
-            var biTanLocation = _shader.GetAttribLocation("a_BiTan");
-            GL.EnableVertexAttribArray(biTanLocation);
-            GL.VertexAttribPointer(biTanLocation, 3, VertexAttribPointerType.Float, false, bufferSize, 8 * sizeof(float));
-
-            var tanLocation = _shader.GetAttribLocation("a_Tan");
-            GL.EnableVertexAttribArray(tanLocation);
-            GL.VertexAttribPointer(tanLocation, 3, VertexAttribPointerType.Float, false, bufferSize, 11 * sizeof(float));
+            GL.EnableVertexAttribArray(4);
+            GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, bufferSize, 11 * sizeof(float));
 
             return new MeshObject(VertexArrayObject, indices.Length);
         }

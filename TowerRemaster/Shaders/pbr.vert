@@ -1,9 +1,9 @@
 ﻿#version 330 core
-layout (location = 0) in vec3 aPosition;
-layout(location = 1) in vec2 aTexCoord;
+layout (location = 0) in vec3 a_Position;
+layout(location = 1) in vec2 a_TexCoord;
 layout(location = 2) in vec3 a_Normal;
-//layout(location = 3) in vec3 a_BiTan;
-//layout(location = 4) in vec3 a_Tan;
+layout(location = 3) in vec3 a_BiTan;
+layout(location = 4) in vec3 a_Tan;
 
 out vec2 texCoord;
 out vec3 normal;
@@ -14,9 +14,9 @@ uniform mat4 model;
 
 void main()
 {
-    texCoord = aTexCoord;
+    texCoord = a_TexCoord;
     // Then all you have to do is multiply the vertices by the transformation matrix, and you'll see your transformation in the scene!
-   gl_Position = vec4(aPosition, 1.0) * mvp;
-   FragPos = vec3(vec4(aPosition, 1.0) * model);
+   gl_Position = vec4(a_Position, 1.0) * mvp;
+   FragPos = vec3(vec4(a_Position, 1.0) * model);
    normal = a_Normal * mat3(transpose(inverse(model)));
 }

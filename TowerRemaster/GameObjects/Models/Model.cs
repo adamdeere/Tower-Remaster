@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using TowerRemaster.Utility;
 
 namespace TowerRemaster.GameObjects.Models
 {
@@ -13,11 +14,11 @@ namespace TowerRemaster.GameObjects.Models
             _count = count;
         }
 
-        private readonly MeshObject[]? m_Geometry;
+        private readonly MeshObject[] m_Geometry;
 
-        public Model(MeshObject[] geometry)
+        public Model(string fileName, string shaderType)
         {
-            m_Geometry = geometry;
+            m_Geometry = ModelLoader.ProcessGeometryArray(fileName, shaderType);
         }
 
         public void DrawModel()
@@ -25,7 +26,13 @@ namespace TowerRemaster.GameObjects.Models
             GL.BindVertexArray(_vao);
             GL.DrawElements(PrimitiveType.Triangles, _count, DrawElementsType.UnsignedInt, 0);
         }
-
+        public void DrawMesh()
+        {
+            foreach (var mesh in m_Geometry)
+            {
+                mesh.DrawGeometry();
+            }
+        }
         public void DisposeModel()
         {
             GL.DeleteVertexArray(_vao);

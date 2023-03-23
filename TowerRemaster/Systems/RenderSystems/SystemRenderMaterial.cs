@@ -9,7 +9,7 @@ using TowerRemaster.Utility;
 
 namespace TowerRemaster.Systems.RenderSystems
 {
-    internal class SystemRender : IRenderSystems
+    internal class SystemRenderMaterial : IRenderSystems
     {
         private readonly Vector3 _lightPos = new Vector3(1.2f, 1.0f, 2.0f);
         private readonly Shader shader;
@@ -19,9 +19,10 @@ namespace TowerRemaster.Systems.RenderSystems
               ComponentTypes.COMPONENT_TRANSFORM
             | ComponentTypes.COMPONENT_MODEL;
 
-        public SystemRender()
+        public SystemRenderMaterial()
         {
             shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
+            ShaderManager.shaderDictionary.Add("pbr", shader);
         }
 
         public void OnAction(EntityManager entityManager)
@@ -29,10 +30,6 @@ namespace TowerRemaster.Systems.RenderSystems
             CameraObject camera = entityManager.CurrentCam;
             shader.Use();
             shader.SetInt("texture1", 0);
-            // shader.SetVector3("objectColor", new Vector3(1.0f, 0.5f, 0.31f));
-            // shader.SetVector3("lightColor", new Vector3(1.0f, 1.0f, 1.0f));
-            // shader.SetVector3("lightPos", _lightPos);
-            // shader.SetVector3("viewPos", camera.Position);
             foreach (var entity in entityManager.Entities())
             {
                 if ((entity.Mask & MASK) == MASK)
@@ -60,7 +57,7 @@ namespace TowerRemaster.Systems.RenderSystems
                     shader.SetMatrix4("mvp", mvp);
 
                     matComp?.MatHandle.SetMaterial(shader);
-                    modelComp?.ModelHandle.DrawModel();
+                    modelComp?.ModelHandle.DrawMesh();
                 }
             }
             GL.UseProgram(0);

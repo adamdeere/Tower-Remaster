@@ -10,13 +10,11 @@ using TowerRemaster.GameObjects.Models;
 using TowerRemaster.Managers;
 using TowerRemaster.Systems.InputSystems;
 using TowerRemaster.Systems.RenderSystems;
-using TowerRemaster.Utility;
 
 namespace TowerRemaster
 {
     internal class Game : GameWindow
     {
-        private Model _model;
         private readonly CameraObject _camera;
 
         private bool _firstMove = true;
@@ -45,8 +43,8 @@ namespace TowerRemaster
 
             Entity newEntity;
 
-            newEntity = new Entity("Doom");
-            newEntity.AddComponent(new ComponentModel(_model));
+            newEntity = new Entity("Backpack");
+            newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/backpackFBX.fbx", "pbr")));
             newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
             newEntity.AddComponent(new ComponentMaterial(new SpecularMaterial(one)));
             m_EntityManager.AddEntity(newEntity);
@@ -61,7 +59,7 @@ namespace TowerRemaster
         private void CreateSystems()
         {
             // add render system
-            m_SystemManager.AddRenderSystem(new SystemRender());
+            m_SystemManager.AddRenderSystem(new SystemRenderMaterial());
             m_SystemManager.AddInputSystem(new SystemInput());
         }
 
@@ -70,9 +68,9 @@ namespace TowerRemaster
             base.OnLoad();
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-            _model = ModelLoader.LoadFromFile("Torch.txt");
-            CreateEntites();
             CreateSystems();
+            CreateEntites();
+           
             // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
             // CursorState = CursorState.Grabbed;
         }
@@ -165,8 +163,6 @@ namespace TowerRemaster
         protected override void OnUnload()
         {
             base.OnUnload();
-
-            _model.DisposeModel();
         }
     }
 }
