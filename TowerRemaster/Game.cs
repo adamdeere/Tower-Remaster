@@ -6,6 +6,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using TowerRemaster.Components;
 using TowerRemaster.GameObjects;
 using TowerRemaster.GameObjects.Materials;
+using TowerRemaster.GameObjects.Models;
 using TowerRemaster.Managers;
 using TowerRemaster.Systems.InputSystems;
 using TowerRemaster.Systems.RenderSystems;
@@ -40,7 +41,7 @@ namespace TowerRemaster
             Vector3 scale = new Vector3(1);
             Vector3 pos = new Vector3(0, 0, 0);
 
-            string one = "Assets/Textures/Sphere/Doom/";
+            string one = "Assets/Textures/Backpack/";
 
             Entity newEntity;
 
@@ -69,7 +70,7 @@ namespace TowerRemaster
             base.OnLoad();
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-            _model = ModelLoader.LoadFromFile("Sphere.txt");
+            _model = ModelLoader.LoadFromFile("Torch.txt");
             CreateEntites();
             CreateSystems();
             // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
