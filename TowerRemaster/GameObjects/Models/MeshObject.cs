@@ -18,5 +18,10 @@ namespace TowerRemaster.GameObjects.Models
             GL.BindVertexArray(m_VAO);
             GL.DrawElements(PrimitiveType.Triangles, m_TriangleCount, DrawElementsType.UnsignedInt, 0);
         }
+
+        public void DisposeGeometry()
+        {
+            GL.DeleteVertexArray(m_VAO);
+        }
     }
 }

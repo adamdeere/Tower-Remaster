@@ -10,6 +10,7 @@ using TowerRemaster.GameObjects.Models;
 using TowerRemaster.Managers;
 using TowerRemaster.Systems.InputSystems;
 using TowerRemaster.Systems.RenderSystems;
+using TowerRemaster.Utility;
 
 namespace TowerRemaster
 {
@@ -70,7 +71,7 @@ namespace TowerRemaster
 
             CreateSystems();
             CreateEntites();
-           
+
             // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
             // CursorState = CursorState.Grabbed;
         }
@@ -163,6 +164,7 @@ namespace TowerRemaster
         protected override void OnUnload()
         {
             base.OnUnload();
+            ModelLoader.DisposeModels();
         }
     }
 }
