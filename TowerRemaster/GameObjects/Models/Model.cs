@@ -6,9 +6,9 @@ namespace TowerRemaster.GameObjects.Models
     {
         private readonly MeshObject[] m_Geometry;
 
-        public Model(string fileName, string shaderType)
+        public Model(string fileName)
         {
-            m_Geometry = ModelLoader.ProcessGeometryArray(fileName, shaderType);
+            m_Geometry = ModelLoader.ProcessGeometryArray(fileName);
         }
 
         public void DrawMesh()

@@ -11,7 +11,6 @@ namespace TowerRemaster.Systems.RenderSystems
 {
     internal class SystemRenderMaterial : IRenderSystems
     {
-        private readonly Vector3 _lightPos = new Vector3(1.2f, 1.0f, 2.0f);
         private readonly Shader shader;
         public string Name => "SystemRenderColour";
 
@@ -21,15 +20,16 @@ namespace TowerRemaster.Systems.RenderSystems
 
         public SystemRenderMaterial()
         {
-            shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
-            ShaderManager.shaderDictionary.Add("pbr", shader);
+            shader = new Shader("Shaders/pbr.vert", "Shaders/pbr.frag");
         }
-
+        ~SystemRenderMaterial()
+        {
+            shader.Dispose();
+        }
         public void OnAction(EntityManager entityManager)
         {
             CameraObject camera = entityManager.CurrentCam;
             shader.Use();
-            shader.SetInt("texture1", 0);
             foreach (var entity in entityManager.Entities())
             {
                 if ((entity.Mask & MASK) == MASK)
@@ -52,11 +52,13 @@ namespace TowerRemaster.Systems.RenderSystems
 
                         model *= Matrix4.CreateTranslation(position.Value.X, position.Value.Y, position.Value.Z);
                     }
-
-                    Matrix4 mvp = model * camera.GetViewMatrix() * camera.GetProjectionMatrix();
-                    shader.SetMatrix4("mvp", mvp);
-
+                   
+                    shader.SetMatrix4("model", model);
+                    shader.SetMatrix4("view", camera.GetViewMatrix());
+                    shader.SetMatrix4("projection", camera.GetProjectionMatrix());
+                    shader.SetVector3("viewPos", camera.Position);
                     matComp?.MatHandle.SetMaterial(shader);
+                    entityManager.OnLightsAction(shader);
                     modelComp?.ModelHandle.DrawMesh();
                 }
             }

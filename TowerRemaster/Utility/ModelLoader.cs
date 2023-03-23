@@ -16,7 +16,7 @@ namespace TowerRemaster.Utility
             }
         }
 
-        public static MeshObject[] ProcessGeometryArray(string fileName, string shaderType)
+        public static MeshObject[] ProcessGeometryArray(string fileName)
         {
             Scene scene;
             AssimpContext importer = new AssimpContext();
@@ -35,12 +35,12 @@ namespace TowerRemaster.Utility
                         scene.Meshes[i].BiTangents.ToArray(),
                         scene.Meshes[i].Tangents.ToArray()
                 };
-                m_Geometry[i] = ProcessGeometry(vertList, scene.Meshes[i].GetIndices(), scene.Meshes[i].VertexCount, shaderType);
+                m_Geometry[i] = ProcessGeometry(vertList, scene.Meshes[i].GetIndices(), scene.Meshes[i].VertexCount);
             }
             return m_Geometry;
         }
 
-        private static MeshObject ProcessGeometry(List<Vector3D[]> vertList, int[] indices, int vertexCount, string shaderType)
+        private static MeshObject ProcessGeometry(List<Vector3D[]> vertList, int[] indices, int vertexCount)
         {
             List<float> vertices = new();
             for (int i = 0; i < vertexCount; i++)

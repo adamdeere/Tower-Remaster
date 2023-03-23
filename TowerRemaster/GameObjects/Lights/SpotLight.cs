@@ -12,9 +12,9 @@ namespace TowerRemaster.GameObjects.Lights
             // Spot light
             shader.SetVector3("spotLight.position", cam.Position);
             shader.SetVector3("spotLight.direction", cam.Front);
-            shader.SetVector3("spotLight.ambient", new Vector3(0.0f, 0.0f, 0.0f));
-            shader.SetVector3("spotLight.diffuse", new Vector3(1.0f, 1.0f, 1.0f));
-            shader.SetVector3("spotLight.specular", new Vector3(1.0f, 1.0f, 1.0f));
+            shader.SetVector3("spotLight.ambient", new Vector3(0));
+            shader.SetVector3("spotLight.diffuse", new Vector3(1));
+            shader.SetVector3("spotLight.specular", new Vector3(1));
             shader.SetFloat("spotLight.constant", 1.0f);
             shader.SetFloat("spotLight.linear", 0.09f);
             shader.SetFloat("spotLight.quadratic", 0.032f);
