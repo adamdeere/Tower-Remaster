@@ -7,9 +7,9 @@ namespace TowerRemaster.GameObjects.Materials
     {
         private readonly Texture m_DiffuseMap;
 
-        public PbrMaterial(string one)
+        public PbrMaterial(string fileName)
         {
-            m_DiffuseMap = TextureLoader.LoadFromFile(one + "Tower_Base_color.png");
+            m_DiffuseMap = TextureLoader.LoadFromFile(fileName);
         }
 
         public string Name => "PbrMaterial";

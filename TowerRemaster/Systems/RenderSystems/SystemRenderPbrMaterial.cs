@@ -4,6 +4,7 @@ using TowerRemaster.Components;
 using TowerRemaster.Components.Interfaces;
 using TowerRemaster.GameObjects;
 using TowerRemaster.GameObjects.Materials;
+using TowerRemaster.GameObjects.Objects;
 using TowerRemaster.Managers;
 using TowerRemaster.Systems.Interfaces;
 using TowerRemaster.Utility;
@@ -16,7 +17,7 @@ namespace TowerRemaster.Systems.RenderSystems
         public string Name => "SystemRenderPbrMaterial";
         private CameraObject? camera;
 
-        private List<Entity> m_Entities = new List<Entity>();
+        private List<GameObject> m_Entities = new List<GameObject>();
 
         private const ComponentTypes MASK =
               ComponentTypes.COMPONENT_TRANSFORM

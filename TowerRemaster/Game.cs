@@ -8,6 +8,7 @@ using TowerRemaster.GameObjects;
 using TowerRemaster.GameObjects.Lights;
 using TowerRemaster.GameObjects.Materials;
 using TowerRemaster.GameObjects.Models;
+using TowerRemaster.GameObjects.Objects;
 using TowerRemaster.Managers;
 using TowerRemaster.Systems.InputSystems;
 using TowerRemaster.Systems.RenderSystems;
@@ -45,30 +46,35 @@ namespace TowerRemaster
 
         private void CreateEntites()
         {
-            Vector3 rot = new Vector3(0);
             Vector3 scale = new Vector3(1);
-            Vector3 pos = new Vector3(0);
 
             string one = "Assets/Textures/Backpack/";
 
-            Entity newEntity;
+            GameObject newEntity;
 
-            newEntity = new Entity("Backpack");
-            newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/backpackFBX.fbx")));
-            newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
+            newEntity = new GameObject("Torch");
+            newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/Torch.fbx")));
+            newEntity.AddComponent(new ComponentTransform(new Vector3(-2, 0,0), new Vector3(0), scale));
             newEntity.AddComponent(new ComponentMaterial(new SpecularMaterial(one)));
             m_EntityManager.AddEntity(newEntity);
 
-            string two = "Assets/Textures/Tower/";
-            newEntity = new Entity("Tower");
+            string two = "Assets/Textures/Tower/Tower_Base_color.png";
+            newEntity = new GameObject("Tower");
             newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/Tower.fbx")));
-            newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
+            newEntity.AddComponent(new ComponentTransform(new Vector3(0), new Vector3(-90, 0, 0), scale));
+            newEntity.AddComponent(new ComponentMaterial(new PbrMaterial(two)));
+            m_EntityManager.AddEntity(newEntity);
+
+            two = "Assets/Textures/Sphere/Doom/Doom_Sphere_Base_color.png";
+            newEntity = new GameObject("Doom");
+            newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/Sphere.fbx")));
+            newEntity.AddComponent(new ComponentTransform(new Vector3(0), new Vector3(-90, 0, 0), scale));
             newEntity.AddComponent(new ComponentMaterial(new PbrMaterial(two)));
             m_EntityManager.AddEntity(newEntity);
 
             const float cameraSpeed = 1.5f;
             const float sensitivity = 0.2f;
-            newEntity = new Entity("MainCam");
+            newEntity = new GameObject("MainCam");
             newEntity.AddComponent(new ComponentCamera(new CameraObject(Vector3.UnitZ * 3, Size.X / (float)Size.Y), cameraSpeed, sensitivity));
             newEntity.AddComponent(new ComponentInput());
 
@@ -128,7 +134,7 @@ namespace TowerRemaster
 
             GL.Enable(EnableCap.DepthTest);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            m_SystemManager.ActionRenderSystems(m_EntityManager);
+             m_SystemManager.ActionRenderSystems(m_EntityManager);
             SwapBuffers();
         }
 

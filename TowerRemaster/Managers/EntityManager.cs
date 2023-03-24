@@ -2,36 +2,37 @@
 using TowerRemaster.Components.Interfaces;
 using TowerRemaster.GameObjects;
 using TowerRemaster.GameObjects.Lights;
+using TowerRemaster.GameObjects.Objects;
 using TowerRemaster.Utility;
 
 namespace TowerRemaster.Managers
 {
     internal class EntityManager
     {
-        private readonly List<Entity> m_EntityList;
+        private readonly List<GameObject> m_EntityList;
         private readonly List<ILightObject> m_LightsList;
 
         public EntityManager()
         {
             m_LightsList = new List<ILightObject>();
-            m_EntityList = new List<Entity>();
+            m_EntityList = new List<GameObject>();
         }
 
-        public void AddEntity(Entity entity)
+        public void AddEntity(GameObject entity)
         {
             //Entity result = FindEntity(entity.Name);
             // Debug.Assert(result != null, "Entity '" + entity.Name + "' already exists");
             m_EntityList.Add(entity);
         }
 
-        public List<Entity> Entities()
+        public List<GameObject> Entities()
         {
             return m_EntityList;
         }
 
-        public Entity FindEntity(string name)
+        public GameObject FindEntity(string name)
         {
-            Entity? entity = m_EntityList.Find(delegate (Entity e)
+            GameObject? entity = m_EntityList.Find(delegate (GameObject e)
             {
                 return e.Name == name;
             });
@@ -50,7 +51,7 @@ namespace TowerRemaster.Managers
 
         public void OnLightsAction(Shader shader)
         {
-            Entity cameraEnt = FindEntity("MainCam");
+            GameObject cameraEnt = FindEntity("MainCam");
 
             if (cameraEnt != null)
             {

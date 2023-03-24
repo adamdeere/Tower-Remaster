@@ -1,15 +1,15 @@
 ﻿using System.Diagnostics;
 using TowerRemaster.Components.Interfaces;
 
-namespace TowerRemaster.GameObjects
+namespace TowerRemaster.GameObjects.Objects
 {
-    internal class Entity
+    internal class GameObject
     {
         private string m_Name;
         private readonly List<IComponent> m_ComponentList = new();
         private ComponentTypes mask;
 
-        public Entity(string name)
+        public GameObject(string name)
         {
             m_Name = name;
         }
