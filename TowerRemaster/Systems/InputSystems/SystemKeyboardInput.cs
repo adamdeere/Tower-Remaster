@@ -8,9 +8,9 @@ using TowerRemaster.Systems.Interfaces;
 
 namespace TowerRemaster.Systems.InputSystems
 {
-    internal class SystemCameraInput : IInputSystems
+    internal class SystemKeyboardInput : IInputSystems
     {
-        public string Name => "SystemCameraInput";
+        public string Name => "SystemKeyboardInput";
 
         private const ComponentTypes MASK =
              ComponentTypes.COMPONENT_CAMERA |
@@ -21,7 +21,7 @@ namespace TowerRemaster.Systems.InputSystems
             return direction * speed * dt;
         }
 
-        public void OnAction(EntityManager entityManager, KeyboardState input, float dt)
+        public void OnAction(EntityManager entityManager, KeyboardState input, MouseState mouse, float dt)
         {
             foreach (var entity in entityManager.Entities())
             {

@@ -5,7 +5,7 @@ namespace TowerRemaster.Systems.Interfaces
 {
     internal interface IInputSystems
     {
-        void OnAction(EntityManager entityManager, KeyboardState state, float dt);
+        void OnAction(EntityManager entityManager, KeyboardState key, MouseState mouse, float dt);
 
         // Property signatures:
         string Name

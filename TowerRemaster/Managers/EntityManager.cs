@@ -1,4 +1,7 @@
-﻿using TowerRemaster.GameObjects;
+﻿using Assimp;
+using TowerRemaster.Components.Interfaces;
+using TowerRemaster.Components;
+using TowerRemaster.GameObjects;
 using TowerRemaster.GameObjects.Lights;
 using TowerRemaster.Utility;
 
@@ -8,19 +11,12 @@ namespace TowerRemaster.Managers
     {
         private readonly List<Entity> m_EntityList;
         private readonly List<ILightObject> m_LightsList;
-        private CameraObject m_CameraObject;
+      
 
-        public EntityManager(CameraObject cameraObject)
+        public EntityManager()
         {
             m_LightsList = new List<ILightObject>();
             m_EntityList = new List<Entity>();
-            m_CameraObject = cameraObject;
-        }
-
-        public CameraObject CurrentCam
-        {
-            get { return m_CameraObject; }
-            set { m_CameraObject = value; }
         }
 
         public void AddEntity(Entity entity)
@@ -56,10 +52,20 @@ namespace TowerRemaster.Managers
 
         public void OnLightsAction(Shader shader)
         {
-            foreach (var light in m_LightsList)
+            Entity cameraEnt = FindEntity("MainCam");
+
+            if (cameraEnt != null)
             {
-                light.SetLights(shader, m_CameraObject);
+                if (cameraEnt.FindComponent(ComponentTypes.COMPONENT_CAMERA) is ComponentCamera cam)
+                {
+                    CameraObject camera = cam.CameraObject;
+                    foreach (var light in m_LightsList)
+                    {
+                        light.SetLights(shader, camera);
+                    }
+                }
             }
+            
         }
     }
 }

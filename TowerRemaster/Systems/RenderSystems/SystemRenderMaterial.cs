@@ -7,13 +7,14 @@ using TowerRemaster.Managers;
 using TowerRemaster.Systems.Interfaces;
 using TowerRemaster.Utility;
 
+
 namespace TowerRemaster.Systems.RenderSystems
 {
     internal class SystemRenderMaterial : IRenderSystems
     {
         private readonly Shader shader;
-        public string Name => "SystemRenderColour";
-
+        public string Name => "SystemRenderMaterial";
+        CameraObject? camera;
         private const ComponentTypes MASK =
               ComponentTypes.COMPONENT_TRANSFORM
             | ComponentTypes.COMPONENT_MODEL;
@@ -30,7 +31,15 @@ namespace TowerRemaster.Systems.RenderSystems
 
         public void OnAction(EntityManager entityManager)
         {
-            CameraObject camera = entityManager.CurrentCam;
+            Entity cameraEnt = entityManager.FindEntity("MainCam");
+            
+            if (cameraEnt != null)
+            {
+                if (cameraEnt.FindComponent(ComponentTypes.COMPONENT_CAMERA) is ComponentCamera cam)
+                {
+                    camera = cam.CameraObject;
+                }
+            }
             shader.Use();
             foreach (var entity in entityManager.Entities())
             {
