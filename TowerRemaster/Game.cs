@@ -54,7 +54,7 @@ namespace TowerRemaster
 
             newEntity = new GameObject("Torch");
             newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/Torch.fbx")));
-            newEntity.AddComponent(new ComponentTransform(new Vector3(-2, 0,0), new Vector3(0), scale));
+            newEntity.AddComponent(new ComponentTransform(new Vector3(-2, 0, 0), new Vector3(0), scale));
             newEntity.AddComponent(new ComponentMaterial(new SpecularMaterial(one)));
             m_EntityManager.AddEntity(newEntity);
 
@@ -134,7 +134,7 @@ namespace TowerRemaster
 
             GL.Enable(EnableCap.DepthTest);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-             m_SystemManager.ActionRenderSystems(m_EntityManager);
+            m_SystemManager.ActionRenderSystems(m_EntityManager);
             SwapBuffers();
         }
 
