@@ -10,10 +10,10 @@ using TowerRemaster.Utility;
 
 namespace TowerRemaster.Systems.RenderSystems
 {
-    internal class SystemRenderMaterial : IRenderSystems
+    internal class SystemRenderPbrMaterial : IRenderSystems
     {
         private readonly Shader shader;
-        public string Name => "SystemRenderMaterial";
+        public string Name => "SystemRenderPbrMaterial";
         private CameraObject? camera;
 
         private List<Entity> m_Entities = new List<Entity>();
@@ -23,14 +23,9 @@ namespace TowerRemaster.Systems.RenderSystems
             | ComponentTypes.COMPONENT_MODEL
             | ComponentTypes.COMPONENT_MATERIAL;
 
-        public SystemRenderMaterial()
+        public SystemRenderPbrMaterial()
         {
-            shader = new Shader("Shaders/specular.vert", "Shaders/specular.frag");
-        }
-
-        ~SystemRenderMaterial()
-        {
-            shader.Dispose();
+            shader = new Shader("Shaders/pbr.vert", "Shaders/pbr.frag");
         }
 
         public void OnAction(EntityManager entityManager)
@@ -55,16 +50,13 @@ namespace TowerRemaster.Systems.RenderSystems
                         model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Value.Z));
                         model *= Matrix4.CreateTranslation(position.Value.X, position.Value.Y, position.Value.Z);
                     }
-
                     shader.SetMatrix4("model", model);
                     if (camera != null)
                     {
                         shader.SetMatrix4("view", camera.GetViewMatrix());
                         shader.SetMatrix4("projection", camera.GetProjectionMatrix());
-                        shader.SetVector3("viewPos", camera.Position);
                     }
                     matComp?.MatHandle.SetMaterial(shader);
-                    entityManager.OnLightsAction(shader);
                     modelComp?.ModelHandle.DrawMesh();
                 }
             }
@@ -86,7 +78,7 @@ namespace TowerRemaster.Systems.RenderSystems
                 {
                     if (entity.FindComponent(ComponentTypes.COMPONENT_MATERIAL) is ComponentMaterial matComp)
                     {
-                        if (matComp.MatHandle is SpecularMaterial)
+                        if (matComp.MatHandle is PbrMaterial)
                         {
                             m_Entities.Add(entity);
                         }

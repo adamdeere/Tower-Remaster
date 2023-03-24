@@ -59,6 +59,13 @@ namespace TowerRemaster
             newEntity.AddComponent(new ComponentMaterial(new SpecularMaterial(one)));
             m_EntityManager.AddEntity(newEntity);
 
+            string two = "Assets/Textures/Tower/";
+            newEntity = new Entity("Tower");
+            newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/Tower.fbx")));
+            newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
+            newEntity.AddComponent(new ComponentMaterial(new PbrMaterial(two)));
+            m_EntityManager.AddEntity(newEntity);
+
             const float cameraSpeed = 1.5f;
             const float sensitivity = 0.2f;
             newEntity = new Entity("MainCam");
@@ -72,8 +79,11 @@ namespace TowerRemaster
         {
             // add render system
             m_SystemManager.AddRenderSystem(new SystemRenderMaterial());
+            m_SystemManager.AddRenderSystem(new SystemRenderPbrMaterial());
+            // add input systems
             m_SystemManager.AddInputSystem(new SystemKeyboardInput());
             m_SystemManager.AddInputSystem(new SystemMouseInput());
+            //add update systems
         }
 
         protected override void OnLoad()
@@ -104,7 +114,6 @@ namespace TowerRemaster
 
                 m_SystemManager.ActionInputSystems(m_EntityManager, input, mouse, (float)e.Time);
                 m_SystemManager.ActionUpdateSystems(m_EntityManager, (float)e.Time);
-
             }
         }
 

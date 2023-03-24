@@ -10,7 +10,6 @@
         COMPONENT_INPUT = 1 << 4,
         COMPONENT_MATERIAL = 1 << 5,
         COMPONENT_CAMERA = 1 << 6,
-        COMPONENT_PBR_MATERIAL = 1 << 7,
     }
 
     internal interface IComponent

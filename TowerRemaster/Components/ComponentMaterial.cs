@@ -7,14 +7,14 @@ namespace TowerRemaster.Components
     {
         public ComponentTypes ComponentType => ComponentTypes.COMPONENT_MATERIAL;
 
-        private SpecularMaterial m_Mat;
+        private IMaterial m_Mat;
 
-        public ComponentMaterial(SpecularMaterial mat)
+        public ComponentMaterial(IMaterial mat)
         {
             m_Mat = mat;
         }
 
-        public SpecularMaterial MatHandle
+        public IMaterial MatHandle
         {
             get { return m_Mat; }
             set { m_Mat = value; }

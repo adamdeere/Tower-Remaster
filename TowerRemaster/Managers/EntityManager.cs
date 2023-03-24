@@ -1,6 +1,5 @@
-﻿using Assimp;
+﻿using TowerRemaster.Components;
 using TowerRemaster.Components.Interfaces;
-using TowerRemaster.Components;
 using TowerRemaster.GameObjects;
 using TowerRemaster.GameObjects.Lights;
 using TowerRemaster.Utility;
@@ -11,7 +10,6 @@ namespace TowerRemaster.Managers
     {
         private readonly List<Entity> m_EntityList;
         private readonly List<ILightObject> m_LightsList;
-      
 
         public EntityManager()
         {
@@ -65,7 +63,6 @@ namespace TowerRemaster.Managers
                     }
                 }
             }
-            
         }
     }
 }
