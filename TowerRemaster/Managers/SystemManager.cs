@@ -57,5 +57,12 @@ namespace TowerRemaster.Managers
             // Debug.Assert(result != null, "System '" + system.Name + "' already exists");
             m_UpdateSystems.Add(system);
         }
+        public void OnSystemLoad(EntityManager entityManager)
+        {
+            foreach(var system in m_RenderSystems)
+            {
+                system.OnLoad(entityManager);
+            }
+        }
     }
 }

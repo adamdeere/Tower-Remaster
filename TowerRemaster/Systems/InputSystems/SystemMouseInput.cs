@@ -24,7 +24,7 @@ namespace TowerRemaster.Systems.InputSystems
             {
                 if ((entity.Mask & MASK) == MASK)
                 {
-                    if (entity.FindComponent(ComponentTypes.COMPONENT_CAMERA) is ComponentCamera cam )
+                    if (entity.FindComponent(ComponentTypes.COMPONENT_CAMERA) is ComponentCamera cam)
                     {
                         CameraObject _camera = cam.CameraObject;
                         float sensitivity = cam.Sensitivity;

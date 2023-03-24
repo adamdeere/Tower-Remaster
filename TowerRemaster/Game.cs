@@ -86,6 +86,7 @@ namespace TowerRemaster
             CreateLights();
             // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
             // CursorState = CursorState.Grabbed;
+            m_SystemManager.OnSystemLoad(m_EntityManager);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)

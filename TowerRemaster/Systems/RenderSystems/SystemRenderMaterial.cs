@@ -6,6 +6,7 @@ using TowerRemaster.GameObjects;
 using TowerRemaster.Managers;
 using TowerRemaster.Systems.Interfaces;
 using TowerRemaster.Utility;
+using static Assimp.Metadata;
 
 
 namespace TowerRemaster.Systems.RenderSystems
@@ -15,13 +16,16 @@ namespace TowerRemaster.Systems.RenderSystems
         private readonly Shader shader;
         public string Name => "SystemRenderMaterial";
         CameraObject? camera;
+
+        List<Entity> m_Entities = new List<Entity>();
         private const ComponentTypes MASK =
               ComponentTypes.COMPONENT_TRANSFORM
-            | ComponentTypes.COMPONENT_MODEL;
+            | ComponentTypes.COMPONENT_MODEL
+            |ComponentTypes.COMPONENT_MATERIAL;
 
         public SystemRenderMaterial()
         {
-            shader = new Shader("Shaders/pbr.vert", "Shaders/pbr.frag");
+            shader = new Shader("Shaders/specular.vert", "Shaders/specular.frag");
         }
 
         ~SystemRenderMaterial()
@@ -31,16 +35,38 @@ namespace TowerRemaster.Systems.RenderSystems
 
         public void OnAction(EntityManager entityManager)
         {
-            Entity cameraEnt = entityManager.FindEntity("MainCam");
-            
-            if (cameraEnt != null)
+            shader.Use();
+            foreach (var entity in m_Entities)
             {
-                if (cameraEnt.FindComponent(ComponentTypes.COMPONENT_CAMERA) is ComponentCamera cam)
+                if (entity.FindComponent(ComponentTypes.COMPONENT_MODEL) is ComponentModel modelComp
+                    && entity.FindComponent(ComponentTypes.COMPONENT_TRANSFORM) is ComponentTransform transformComp
+                    && entity.FindComponent(ComponentTypes.COMPONENT_MATERIAL) is ComponentMaterial matComp)
                 {
-                    camera = cam.CameraObject;
+                    Vector3? position = transformComp?.Position;
+                    Vector3? rotation = transformComp?.Rotation;
+                    Vector3? scale = transformComp?.Scale;
+
+                    var model = Matrix4.Identity;
+                    if (position != null && rotation != null && scale != null)
+                    {
+                        model *= Matrix4.CreateScale(scale.Value.X, scale.Value.Y, scale.Value.Z);
+                        model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(rotation.Value.X));
+                        model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(rotation.Value.Y));
+                        model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(rotation.Value.Z));
+
+                        model *= Matrix4.CreateTranslation(position.Value.X, position.Value.Y, position.Value.Z);
+                    }
+
+                    shader.SetMatrix4("model", model);
+                    shader.SetMatrix4("view", camera.GetViewMatrix());
+                    shader.SetMatrix4("projection", camera.GetProjectionMatrix());
+                    shader.SetVector3("viewPos", camera.Position);
+                    matComp?.MatHandle.SetMaterial(shader);
+                    entityManager.OnLightsAction(shader);
+                    modelComp?.ModelHandle.DrawMesh();
                 }
             }
-            shader.Use();
+            /*
             foreach (var entity in entityManager.Entities())
             {
                 if ((entity.Mask & MASK) == MASK)
@@ -73,7 +99,29 @@ namespace TowerRemaster.Systems.RenderSystems
                     modelComp?.ModelHandle.DrawMesh();
                 }
             }
+            */
             GL.UseProgram(0);
+        }
+
+        public void OnLoad(EntityManager entityManager)
+        {
+            Entity cameraEnt = entityManager.FindEntity("MainCam");
+
+            if (cameraEnt != null)
+            {
+                if (cameraEnt.FindComponent(ComponentTypes.COMPONENT_CAMERA) is ComponentCamera cam)
+                {
+                    camera = cam.CameraObject;
+                }
+            }
+
+            foreach (var entity in entityManager.Entities())
+            {
+                if ((entity.Mask & MASK) == MASK)
+                {
+                    m_Entities.Add(entity);
+                }
+            }
         }
     }
 }
