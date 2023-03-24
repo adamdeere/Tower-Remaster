@@ -44,11 +44,11 @@ namespace TowerRemaster.Managers
             m_InputSystems.Add(system);
         }
 
-        public void ActionInputSystems(EntityManager entityManager, KeyboardState dt)
+        public void ActionInputSystems(EntityManager entityManager, KeyboardState state, MouseState mouse, float dt)
         {
             foreach (var system in m_InputSystems)
             {
-                system.OnAction(entityManager, dt);
+                system.OnAction(entityManager, state, mouse, dt);
             }
         }
 
