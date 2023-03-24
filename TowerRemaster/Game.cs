@@ -42,12 +42,14 @@ namespace TowerRemaster
             m_EntityManager = new EntityManager(_camera);
             m_SystemManager = new SystemManager();
         }
+
         private void CreateLights()
         {
             m_EntityManager.AddLight(new DirectionalLight());
             m_EntityManager.AddLight(new SpotLight());
             m_EntityManager.AddLight(new PointLight(_pointLightPositions));
         }
+
         private void CreateEntites()
         {
             Vector3 rot = new Vector3(0);
@@ -64,18 +66,20 @@ namespace TowerRemaster
             newEntity.AddComponent(new ComponentMaterial(new SpecularMaterial(one)));
             m_EntityManager.AddEntity(newEntity);
 
-            // newEntity = new Entity("MainCam");
-            // newEntity.AddComponent(new ComponentModel(_model));
-            // newEntity.AddComponent(new ComponentTransform(pos, rot, scale));
-            // newEntity.AddComponent(new ComponentMaterial(new Material(one, two)));
-            // m_EntityManager.AddEntity(newEntity);
+            const float cameraSpeed = 1.5f;
+            const float sensitivity = 0.2f;
+            newEntity = new Entity("MainCam");
+            newEntity.AddComponent(new ComponentCamera(_camera, cameraSpeed, sensitivity));
+            newEntity.AddComponent(new ComponentInput());
+
+            m_EntityManager.AddEntity(newEntity);
         }
 
         private void CreateSystems()
         {
             // add render system
             m_SystemManager.AddRenderSystem(new SystemRenderMaterial());
-            m_SystemManager.AddInputSystem(new SystemInput());
+            m_SystemManager.AddInputSystem(new SystemCameraInput());
         }
 
         protected override void OnLoad()
@@ -94,7 +98,7 @@ namespace TowerRemaster
         {
             base.OnUpdateFrame(e);
             var input = KeyboardState;
-            // m_SystemManager.ActionInputSystems(m_EntityManager, input);
+            m_SystemManager.ActionInputSystems(m_EntityManager, input, (float)e.Time);
             m_SystemManager.ActionUpdateSystems(m_EntityManager, (float)e.Time);
             if (!IsFocused) // Check to see if the window is focused
                 return;
@@ -102,34 +106,8 @@ namespace TowerRemaster
             if (input.IsKeyDown(Keys.Escape))
                 Close();
 
-            const float cameraSpeed = 1.5f;
             const float sensitivity = 0.2f;
 
-            if (input.IsKeyDown(Keys.W))
-            {
-                _camera.Position += _camera.Front * cameraSpeed * (float)e.Time; // Forward
-            }
-
-            if (input.IsKeyDown(Keys.S))
-            {
-                _camera.Position -= _camera.Front * cameraSpeed * (float)e.Time; // Backwards
-            }
-            if (input.IsKeyDown(Keys.A))
-            {
-                _camera.Position -= _camera.Right * cameraSpeed * (float)e.Time; // Left
-            }
-            if (input.IsKeyDown(Keys.D))
-            {
-                _camera.Position += _camera.Right * cameraSpeed * (float)e.Time; // Right
-            }
-            if (input.IsKeyDown(Keys.Space))
-            {
-                _camera.Position += _camera.Up * cameraSpeed * (float)e.Time; // Up
-            }
-            if (input.IsKeyDown(Keys.LeftShift))
-            {
-                _camera.Position -= _camera.Up * cameraSpeed * (float)e.Time; // Down
-            }
             // Get the mouse state
             var mouse = MouseState;
 

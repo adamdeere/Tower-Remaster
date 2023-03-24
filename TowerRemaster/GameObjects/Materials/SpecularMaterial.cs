@@ -11,7 +11,7 @@ namespace TowerRemaster.GameObjects.Materials
 
         private readonly Texture m_DiffuseMap;
         private readonly Texture m_SpecularMap;
-       // private readonly Texture m_NormalMap;
+        // private readonly Texture m_NormalMap;
 
         public string Name => "SpecularMaterial";
 
@@ -28,14 +28,14 @@ namespace TowerRemaster.GameObjects.Materials
             m_DiffuseMap.Use(TextureUnit.Texture0);
             shader.SetInt("material.diffuse", 0);
 
-             m_SpecularMap.Use(TextureUnit.Texture1);
-             shader.SetInt("material.specular", 1);
+            m_SpecularMap.Use(TextureUnit.Texture1);
+            shader.SetInt("material.specular", 1);
 
             // m_NormalMap.Use(TextureUnit.Texture2);
             // shader.SetInt("material.normal", 2);
 
-             shader.SetVector3("material.specular", m_SpecularLight);
-             shader.SetFloat("material.shininess", m_Shininess);
+            shader.SetVector3("material.specular", m_SpecularLight);
+            shader.SetFloat("material.shininess", m_Shininess);
         }
     }
 }

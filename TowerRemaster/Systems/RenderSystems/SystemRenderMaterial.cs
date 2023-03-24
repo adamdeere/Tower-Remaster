@@ -22,10 +22,12 @@ namespace TowerRemaster.Systems.RenderSystems
         {
             shader = new Shader("Shaders/pbr.vert", "Shaders/pbr.frag");
         }
+
         ~SystemRenderMaterial()
         {
             shader.Dispose();
         }
+
         public void OnAction(EntityManager entityManager)
         {
             CameraObject camera = entityManager.CurrentCam;
@@ -52,7 +54,7 @@ namespace TowerRemaster.Systems.RenderSystems
 
                         model *= Matrix4.CreateTranslation(position.Value.X, position.Value.Y, position.Value.Z);
                     }
-                   
+
                     shader.SetMatrix4("model", model);
                     shader.SetMatrix4("view", camera.GetViewMatrix());
                     shader.SetMatrix4("projection", camera.GetProjectionMatrix());

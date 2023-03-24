@@ -75,7 +75,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
-     vec3 norm = normalize(normal);
+    vec3 norm = normalize(normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
     //phase 1: Directional lighting
