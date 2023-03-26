@@ -1,5 +1,6 @@
 ﻿using Assimp;
 using OpenTK.Graphics.OpenGL4;
+using System.IO;
 using TowerRemaster.GameObjects.Models;
 
 namespace TowerRemaster.Utility
@@ -18,6 +19,9 @@ namespace TowerRemaster.Utility
 
         public static MeshObject[] ProcessGeometryArray(string fileName)
         {
+            if (string.IsNullOrEmpty(fileName))
+                throw new ArgumentException(fileName);
+           
             Scene scene;
             AssimpContext importer = new AssimpContext();
             importer.SetConfig(new Assimp.Configs.NormalSmoothingAngleConfig(66.0f));

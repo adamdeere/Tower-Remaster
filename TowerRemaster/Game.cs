@@ -39,9 +39,9 @@ namespace TowerRemaster
 
         private void CreateLights()
         {
-            m_EntityManager.AddLight(new DirectionalLight());
-            m_EntityManager.AddLight(new SpotLight());
-            m_EntityManager.AddLight(new PointLight(_pointLightPositions));
+            //m_EntityManager.AddLight(new DirectionalLight());
+           // m_EntityManager.AddLight(new SpotLight());
+            //m_EntityManager.AddLight(new PointLight(_pointLightPositions));
         }
 
         private void CreateEntites()
@@ -52,24 +52,28 @@ namespace TowerRemaster
 
             GameObject newEntity;
 
+            /*
             newEntity = new GameObject("Torch");
             newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/Torch.fbx")));
             newEntity.AddComponent(new ComponentTransform(new Vector3(-2, 0, 0), new Vector3(0), scale));
             newEntity.AddComponent(new ComponentMaterial(new SpecularMaterial(one)));
             m_EntityManager.AddEntity(newEntity);
+            */
 
-            string two = "Assets/Textures/Tower/Tower_Base_color.png";
+            string diffuse = "Assets/Textures/Tower/Tower_Base_color.png";
+            string normal = "Assets/Textures/Tower/Tower_Normal_OpenGL.png";
             newEntity = new GameObject("Tower");
             newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/Tower.fbx")));
             newEntity.AddComponent(new ComponentTransform(new Vector3(0), new Vector3(-90, 0, 0), scale));
-            newEntity.AddComponent(new ComponentMaterial(new PbrMaterial(two)));
+            newEntity.AddComponent(new ComponentMaterial(new PbrMaterial(diffuse, normal)));
             m_EntityManager.AddEntity(newEntity);
 
-            two = "Assets/Textures/Sphere/Doom/Doom_Sphere_Base_color.png";
+            diffuse = "Assets/Textures/Sphere/Doom/Doom_Sphere_Base_color.png";
+            normal = "Assets/Textures/Sphere/Doom/Doom_Sphere_Normal_OpenGL.png";
             newEntity = new GameObject("Doom");
             newEntity.AddComponent(new ComponentModel(new Model("Assets/Models/Sphere.fbx")));
             newEntity.AddComponent(new ComponentTransform(new Vector3(0), new Vector3(-90, 0, 0), scale));
-            newEntity.AddComponent(new ComponentMaterial(new PbrMaterial(two)));
+            newEntity.AddComponent(new ComponentMaterial(new PbrMaterial(diffuse, normal)));
             m_EntityManager.AddEntity(newEntity);
 
             const float cameraSpeed = 1.5f;

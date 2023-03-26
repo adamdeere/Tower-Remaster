@@ -19,6 +19,8 @@ namespace TowerRemaster.Systems.RenderSystems
 
         private List<GameObject> m_Entities = new List<GameObject>();
 
+        Vector3 lightPos = new Vector3(0, 0, 0);
+
         private const ComponentTypes MASK =
               ComponentTypes.COMPONENT_TRANSFORM
             | ComponentTypes.COMPONENT_MODEL
@@ -56,8 +58,11 @@ namespace TowerRemaster.Systems.RenderSystems
                     {
                         shader.SetMatrix4("view", camera.GetViewMatrix());
                         shader.SetMatrix4("projection", camera.GetProjectionMatrix());
+                        shader.SetVector3("viewPos", camera.Position);
+                        shader.SetVector3("lightPos", lightPos);
                     }
                     matComp?.MatHandle.SetMaterial(shader);
+                  //  entityManager.OnLightsAction(shader);
                     modelComp?.ModelHandle.DrawMesh();
                 }
             }
