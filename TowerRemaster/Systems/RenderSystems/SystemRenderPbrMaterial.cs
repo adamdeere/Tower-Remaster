@@ -19,7 +19,7 @@ namespace TowerRemaster.Systems.RenderSystems
 
         private List<GameObject> m_Entities = new List<GameObject>();
 
-        Vector3 lightPos = new Vector3(0, 0, 0);
+        Vector3 lightPos = new Vector3(0, -5, 0);
 
         private const ComponentTypes MASK =
               ComponentTypes.COMPONENT_TRANSFORM
